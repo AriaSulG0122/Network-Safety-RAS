@@ -1,10 +1,12 @@
-#include "iostream"
+﻿#include "iostream"
+#include "CDesOperate.h"
 using namespace std;
 
 int main()
 {
-	int n;
-	cin >> n;
-	cout << n;
+	char key[10] = {0};
+	printf("Please input the key:");
+    scanf("%s", key);
+	op.MakeKey(key);
 	return 1;
 }

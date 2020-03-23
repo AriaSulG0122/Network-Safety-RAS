@@ -1,49 +1,89 @@
 #include "CDesOperate.h"
 #include "StaticArray.h"
-
-INT32 CDesOperate::MakeKey(ULONG32 *keyleft, ULONG32 *keyright, ULONG32 number)
+#include "stdio.h"
+static bool Debug = true;
+INT32 CDesOperate::MakeKey(char *key)
 {
-	ULONG32 tmpkey[2] = { 0 };
-	ULONG32 *Ptmpkey = (ULONG32*)tmpkey;
-	ULONG32 *Poutkey = (ULONG32*)&g_outkey[number];
-	INT32 j;
-	memset((short*)tmpkey, 0, sizeof(tmpkey));
-	*Ptmpkey = *keyleft&leftandtab[lefttable[number]];
-	Ptmpkey[1] = *keyright&leftandtab[lefttable[number]];
-	if (lefttable[number] == 1)//移位为1
+	short tmp[64] = { 0 };
+	//将key放入到数组
+	for (int i = 0; i < 8; i++)
 	{
-		*Ptmpkey >>= 27;
-		Ptmpkey[1] >>= 27;
-	}
-	else//移位为2
-	{
-		*Ptmpkey >>= 26;
-		Ptmpkey[1] >>= 26;
-	}
-	Ptmpkey[0] &= 0xfffffff0;
-	Ptmpkey[1] &= 0xfffffff0;
-	*keyleft <<= lefttable[number];
-	*keyright <<= lefttable[number];
-	*keyleft |= Ptmpkey[0];
-	*keyright |= Ptmpkey[1];
-	Ptmpkey[0] = 0;
-	Ptmpkey[1] = 0;
-	for (j = 0; j < 48; j++)
-	{
-		if (j < 24)
+		//printf("\n%d:", key[i]);
+		for (int j = 0; j < 7; j++)
 		{
-			if (*keyleft&pc_by_bit[keychoose[j] - 1])
+			tmp[i * 8 + 7 - j-1] = key[i] % 2;
+			key[i] = key[i] / 2;
+		}
+		//设置奇偶校验位
+		int count = 0;
+		for (int j = 0; j < 7; j++) {
+			if (tmp[i * 8 + j]) { count++; }
+			//printf("%d ", tmp[i * 8 + j]);
+		}
+		if (!(count % 2)) { tmp[i * 8 + 7] = 1; }
+		//printf("%d ", tmp[i*8+7]);
+	}
+	//printf("\n");
+	short Ikey[56];
+	//对key进行初始置换，得到IP(K)
+	for (int i = 0; i < 56; i++)
+	{
+		Ikey[i] = tmp[keyarray[i]-1];
+		if(Debug){printf("%d ", Ikey[i]);
+		if((i+1)%14==0)printf("\n");}
+	}
+	//进行移位
+	UINT64 tempKey=0;
+	for (int i = 0; i < 16; i++)
+	{
+		short tmpK[56];
+		if (i == 0 || i == 1 || i == 15)//左移1位
+		{
+			tmpK[27] = Ikey[0];
+			for (int j = 0; j < 27; j++)
 			{
-				Poutkey[0] |= pc_by_bit[j];
+				tmpK[j] = Ikey[j+1];
+				//if(Debug)printf("%d ", tmpK[j]);
+			}
+			//if(Debug)printf("%d \n", tmpK[27]);
+			tmpK[55] = Ikey[28];
+			for (int j = 28; j < 55; j++)
+			{
+				tmpK[j] = Ikey[j+1];
+				//if(Debug)printf("%d ", tmpK[j]);
+			}
+			//if(Debug)printf("%d \n", tmpK[55]);
+		}
+		else //左移2位
+		{
+			tmpK[26] = Ikey[0];
+			tmpK[27] = Ikey[1];
+			for (int j = 0; j < 26; j++)
+			{
+				tmpK[j] = Ikey[j+2];
+			}
+			tmpK[54] = Ikey[28];
+			tmpK[55] = Ikey[29];
+			for (int j = 28; j < 54; j++)
+			{
+				tmpK[j] = Ikey[j+2];
 			}
 		}
-		else /*j>=24*/
+		//递归传给i+1
+		for (int j = 0; j < 56; j++) { Ikey[j] = tmpK[j]; }
+		//进行Pk选择，形成48位密钥
+		if(Debug)printf("\ni=%d: ", i);
+		for (int j = 0; j < 48; j++)
 		{
-			if (*keyright&pc_by_bit[(keychoose[j] - 28)])
-			{
-				Poutkey[1] |= pc_by_bit[j - 24];
-			}
+			m_arrOutKey[i][j] = tmpK[keychoose[j]-1];
+			if(Debug)printf("%d ", m_arrOutKey[i][j]);
 		}
 	}
-	return SUCCESS;
+	return 1;
 }
+/*INT32 CDesOperate::MakeData(char *plaintext)
+{
+	
+	
+	return 1;
+}*/
