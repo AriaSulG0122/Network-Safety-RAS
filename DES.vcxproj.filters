@@ -21,12 +21,24 @@
     <ClCompile Include="CDesOperate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MyServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CDesOperate.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="StaticArray.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyServer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
