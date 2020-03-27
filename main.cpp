@@ -6,6 +6,7 @@ using namespace std;
 
 int main()
 {
+	
 	char mode[10] = { 0 };
 	printf("Server or Client?Please Input S or C:");
 	while (1) {
@@ -15,9 +16,9 @@ int main()
 		else { printf("Wrong Input!!! Please input S or C:"); }
 	}
 	system("pause");
-
-
 	/*
+
+	
 	char key[10] = {0},plaintext[255];
 	printf("Please input the key:");
 	scanf("%s", key);

@@ -88,7 +88,7 @@ INT32 CDesOperate::MakeKey(char *key)
 //实现16轮加密
 int CDesOperate::encry(int k)
 {
-	bool Debug = true;
+	bool Debug = false;
 	short pR[32] = { 0 }, pL[32] = { 0 }, cR[32] = { 0 }, cL[32] = { 0 };
 	//形成L0R0
 	for (int i = 0; i < 32; i++)
@@ -155,16 +155,18 @@ int CDesOperate::encry(int k)
 		temp[i] = cR[i];
 		temp[i + 32] = cL[i];
 	}
+	if (Debug)printf("\nciphtext[%d]:",k);
 	for (int i = 0; i < 64; i++)
 	{
-		ciphArray[k][i] = temp[pc_last[i] - 1];
+		op.ciphArray[k][i] = temp[pc_last[i] - 1];
+		if (Debug&&i == 1)printf("%d ",op.ciphArray[k][i]);
 	}
 	return 1;
 }
 //进行明文加密
 INT32 CDesOperate::MakeData(char *plaintext)
 {
-	bool Debug = true;
+	bool Debug = false;
 	int length = strlen(plaintext);
 	int k = length / 8, kex = length % 8;
 	if (Debug)printf("length:%d k:%d kex:%d\n", strlen(plaintext), k, kex);
@@ -222,10 +224,27 @@ INT32 CDesOperate::MakeData(char *plaintext)
 	return 1;
 }
 
+//将01串转化为字符串
+int CDesOperate::Bit2Char(short *BitArray)
+{
+	char c = 0, count = strlen(op.plaintext);
+	for (int i = 0; i < 64; i++)
+	{
+		c = c * 2 + BitArray[i];
+		if ((i + 1) % 8 == 0)
+		{
+			op.plaintext[count++] = c;
+			c = 0;
+		}
+	}
+	return 1;
+}
+
+
 //实现16轮解密
 int CDesOperate::decry(int k)
 {
-	bool Debug = true;
+	bool Debug = false;
 	short pR[32] = { 0 }, pL[32] = { 0 }, cR[32] = { 0 }, cL[32] = { 0 };
 	//形成L0'R0'
 	for (int i = 0; i < 32; i++)
@@ -282,7 +301,7 @@ int CDesOperate::decry(int k)
 		}
 	}
 	//完成16轮了，进行逆初始置换
-	short temp[64] = { 0 }, M[64] = { 0 };
+	short temp[64] = { 0 };
 	for (int i = 0; i < 32; i++)
 	{
 		temp[i] = cR[i];
@@ -291,15 +310,18 @@ int CDesOperate::decry(int k)
 	if (Debug)printf("\nM:");
 	for (int i = 0; i < 64; i++)
 	{
-		M[i] = temp[pc_last[i] - 1];
-		if (Debug)printf("%d ", M[i]);
+		op.textArray[k][i] = temp[pc_last[i] - 1];
+		if (Debug)printf("%d ", op.textArray[k][i]);
 	}
+	//op.Bit2Char(op.textArray[k]);
+	//printf("%s", op.plaintext);
 	return 1;
 }
 
+//进行明文解密
 INT32 CDesOperate::MakeCiph(short *ciphtext, int k)
 {
-	bool Debug = true;
+	bool Debug = false;
 	if (Debug) printf("\nL0'R0':");
 	//进行IP置换
 	for (int j = 0; j < 64; j++)

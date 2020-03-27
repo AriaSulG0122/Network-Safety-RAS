@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-
+#include "CDesOperate.h"
 #pragma comment(lib,"ws2_32.lib")
 
 int runClient()
@@ -26,12 +26,44 @@ int runClient()
 	}
 	else
 	{
-		printf("C: Success to connect to server\nC: Please input the plaintext:");
-		char plaintext[100];
-		scanf("%s", plaintext);
-		send(ServerSocket, plaintext, strlen(plaintext), 0);
+		printf("C: Success to connect to server\n");
+		char key[10] = { 0 }, plaintext[255], ciphtext[500] = { 0 };
+		printf("C: Please input the key:");
+		scanf("%s", key);
+		op.MakeKey(key);
+		bool Continue = true;
+		while (Continue) {//如果用户需要继续发送信息，则继续发送
+			printf("C: Please input the plaintext:");
+			setbuf(stdin, NULL);
+			scanf("%[^\n]s", plaintext);//使得空行代表读取完毕而不是空格
+			op.MakeData(plaintext);
+			int count = 0;
+			printf("\nC: Send the ciphtext to server:");
+			for (int i = 0; i < op.groupCount; i++)
+			{
+				for (int j = 0; j < 64; j++)
+				{
+					ciphtext[count++] = op.ciphArray[i][j] + 48;//***这里注意，要加上48
+				}
+			}
+			ciphtext[count] = '\0';
+			printf("%s ", ciphtext);
+			//发送数据给服务器
+			send(ServerSocket, ciphtext, strlen(ciphtext), 0);
+			//用户选择是否继续通讯
+			printf("\nC: If continue to send message?(Y/N)");
+			char command[10] = { 0 };
+			while (1) {
+				scanf("%s", command);
+				if (command[0] == 'Y' || command[0] == 'y') { break; }
+				else if (command[0] == 'N' || command[0] == 'n') { printf("\nExit!"); Continue = false; break; }
+				else { printf("Wrong Input!!! Please input Y or N:"); }
+			}
+		}
+		//如果用户选择退出，则向服务器发送退出请求
+		char exit[] = "0100111000011110011000010010000010010111000110001011100110101011";
+		send(ServerSocket, exit, strlen(exit), 0);
 	}
-	getchar();
 	closesocket(ServerSocket);
 	WSACleanup();
 	return 0;
