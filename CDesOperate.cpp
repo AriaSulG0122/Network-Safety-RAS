@@ -1,6 +1,7 @@
 #include "CDesOperate.h"
 #include "StaticArray.h"
 #include "stdio.h"
+#include <time.h>
 CDesOperate op;
 //产生16把子钥
 INT32 CDesOperate::MakeKey(char *key)
@@ -336,4 +337,13 @@ INT32 CDesOperate::MakeCiph(short *ciphtext, int k)
 	}
 	op.decry(k);
 	return 1;
+}
+
+char* CDesOperate::getTime()
+{
+	time_t timep;
+	time(&timep);
+	char tmp[64];
+	strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
+	return tmp;
 }

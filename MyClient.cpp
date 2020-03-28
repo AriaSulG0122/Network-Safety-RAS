@@ -3,6 +3,7 @@
 #include "CDesOperate.h"
 #pragma comment(lib,"ws2_32.lib")
 
+
 int runClient()
 {
 	//1.加载套接字库
@@ -31,14 +32,16 @@ int runClient()
 		printf("C: Please input the key:");
 		scanf("%s", key);
 		op.MakeKey(key);
-		bool Continue = true;
-		while (Continue) {//如果用户需要继续发送信息，则继续发送
+		while (1) 
+		{  //发送密文信息
 			printf("C: Please input the plaintext:");
 			setbuf(stdin, NULL);
 			scanf("%[^\n]s", plaintext);//使得空行代表读取完毕而不是空格
+			bool exit = false;
+			if (strcmp(plaintext, "exit") == 0) { exit=true; }
 			op.MakeData(plaintext);
 			int count = 0;
-			printf("\nC: Send the ciphtext to server:");
+			printf("C: Send the ciphtext to server:");
 			for (int i = 0; i < op.groupCount; i++)
 			{
 				for (int j = 0; j < 64; j++)
@@ -50,19 +53,39 @@ int runClient()
 			printf("%s ", ciphtext);
 			//发送数据给服务器
 			send(ServerSocket, ciphtext, strlen(ciphtext), 0);
-			//用户选择是否继续通讯
-			printf("\nC: If continue to send message?(Y/N)");
-			char command[10] = { 0 };
-			while (1) {
-				scanf("%s", command);
-				if (command[0] == 'Y' || command[0] == 'y') { break; }
-				else if (command[0] == 'N' || command[0] == 'n') { printf("\nExit!"); Continue = false; break; }
-				else { printf("Wrong Input!!! Please input Y or N:"); }
+			if (exit) { break; }
+			//利用返回的套接字和服务器通信，接收加密信息
+			char s[256] = { 0 };
+			recv(ServerSocket, s, 256, 0);
+			printf("\nC: Receive server data:%s\n", s);
+			memset(op.plaintext, 0, sizeof(op.plaintext));//初始化明文
+			//收到加密信息后，进行解密
+			op.groupCount = 0;
+			for (int i = 0; i < strlen(s); i++)//拆解收到的加密信息，转为二进制数组
+			{
+				op.ciphArray[op.groupCount][i % 64] = s[i] - 48;
+				if ((i + 1) % 64 == 0)
+				{
+					op.groupCount++;
+				}
 			}
+			for (int i = 0; i < op.groupCount; i++)
+			{
+				op.MakeCiph(op.ciphArray[i], i);
+			}
+			//输出解密后的明文
+			char time[64];
+			strcpy(time,op.getTime());
+			printf("C: [%s]After decoding,get data:", time);
+			for (int i = 0; i < op.groupCount; i++)
+			{
+				op.Bit2Char(op.textArray[i]);
+			}
+			printf("%s\n", op.plaintext);
+			if (strcmp(op.plaintext, "exit") == 0) { break; }
 		}
 		//如果用户选择退出，则向服务器发送退出请求
-		char exit[] = "0100111000011110011000010010000010010111000110001011100110101011";
-		send(ServerSocket, exit, strlen(exit), 0);
+		printf("\nC: Exit now...");
 	}
 	closesocket(ServerSocket);
 	WSACleanup();
