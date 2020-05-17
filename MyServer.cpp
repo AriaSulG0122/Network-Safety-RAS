@@ -27,18 +27,18 @@ int runServer()
 	//5.等待并接收客户端请求，返回新的连接套接字
 	SOCKADDR_IN addr_out;
 	int len = sizeof(SOCKADDR);
-	SOCKET accSock = accept(ServerSocket, (SOCKADDR*)&addr_out, &len);
+	SOCKET ClientSocket = accept(ServerSocket, (SOCKADDR*)&addr_out, &len);
 	//6.计算密钥	
 	char key[10] = { 0 };
 	printf("Please input the key:");
 	scanf("%s", key);
 	op.MakeKey(key);
-	while (1)\
+	while (1)
 	{
 		memset(op.plaintext, 0, sizeof(op.plaintext));//初始化明文
 		//利用返回的套接字和客户端通信
 		char s[256] = { 0 };
-		recv(accSock, s, 256, 0);//接收密文
+		recv(ClientSocket, s, 256, 0);//接收密文
 		printf("\nS: Receive client data:%s\n", s);
 		//拆解收到的加密信息，转为二进制数组
 		op.groupCount = 0;
@@ -73,7 +73,8 @@ int runServer()
 		if (strcmp(plaintext, "exit") == 0) { exit = true; }
 		op.MakeData(plaintext);
 		int count = 0;
-		printf("S: Send the ciphtext to client:");
+		strcpy(time,op.getTime());
+		printf("S: [%s]Send the ciphtext to client:",time);
 		for (int i = 0; i < op.groupCount; i++)
 		{
 			for (int j = 0; j < 64; j++)
@@ -84,9 +85,8 @@ int runServer()
 		ciphtext[count] = '\0';
 		printf("%s ", ciphtext);
 		//发送数据给服务器
-		send(accSock, ciphtext, strlen(ciphtext), 0);
+		send(ClientSocket, ciphtext, strlen(ciphtext), 0);
 		if (exit) { break; }
-
 	}
 	printf("\nS: Exit now...");
 

@@ -6,6 +6,8 @@ CDesOperate op;
 //产生16把子钥
 INT32 CDesOperate::MakeKey(char *key)
 {
+	/*pc_first[1]=100;
+	printf("%d\n", pc_first[1]);*/
 	bool Debug = false;
 	short tmp[64] = { 0 };
 	//将key放入到数组

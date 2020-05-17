@@ -41,7 +41,9 @@ int runClient()
 			if (strcmp(plaintext, "exit") == 0) { exit=true; }
 			op.MakeData(plaintext);
 			int count = 0;
-			printf("C: Send the ciphtext to server:");
+			char time[64];
+			strcpy(time,op.getTime());
+			printf("C: [%s]Send the ciphtext to server:",time);
 			for (int i = 0; i < op.groupCount; i++)
 			{
 				for (int j = 0; j < 64; j++)
@@ -74,7 +76,6 @@ int runClient()
 				op.MakeCiph(op.ciphArray[i], i);
 			}
 			//输出解密后的明文
-			char time[64];
 			strcpy(time,op.getTime());
 			printf("C: [%s]After decoding,get data:", time);
 			for (int i = 0; i < op.groupCount; i++)

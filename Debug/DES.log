@@ -1,4 +1,5 @@
-﻿  MyServer.cpp
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (DES.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  MyServer.cpp
 c:\users\33712\desktop\des\des\myserver.cpp(45): warning C4018: “<”: 有符号/无符号不匹配
 c:\users\33712\desktop\des\des\myserver.cpp(34): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1270): note: 参见“scanf”的声明
@@ -8,16 +9,26 @@ c:\users\33712\desktop\des\des\myserver.cpp(70): warning C4996: 'setbuf': This f
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(396): note: 参见“setbuf”的声明
 c:\users\33712\desktop\des\des\myserver.cpp(71): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1270): note: 参见“scanf”的声明
+c:\users\33712\desktop\des\des\myserver.cpp(76): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 参见“strcpy”的声明
   MyClient.cpp
-c:\users\33712\desktop\des\des\myclient.cpp(64): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\33712\desktop\des\des\myclient.cpp(66): warning C4018: “<”: 有符号/无符号不匹配
 c:\users\33712\desktop\des\des\myclient.cpp(33): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1270): note: 参见“scanf”的声明
 c:\users\33712\desktop\des\des\myclient.cpp(38): warning C4996: 'setbuf': This function or variable may be unsafe. Consider using setvbuf instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(396): note: 参见“setbuf”的声明
 c:\users\33712\desktop\des\des\myclient.cpp(39): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1270): note: 参见“scanf”的声明
-c:\users\33712\desktop\des\des\myclient.cpp(78): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\33712\desktop\des\des\myclient.cpp(45): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 参见“strcpy”的声明
+c:\users\33712\desktop\des\des\myclient.cpp(79): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: 参见“strcpy”的声明
+  main.cpp
+  CDesOperate.cpp
+c:\users\33712\desktop\des\des\cdesoperate.cpp(233): warning C4267: “初始化”: 从“size_t”转换到“char”，可能丢失数据
+c:\users\33712\desktop\des\des\cdesoperate.cpp(349): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\time.h(505): note: 参见“localtime”的声明
   正在生成代码...
-  DES.vcxproj -> C:\Users\33712\Desktop\DES\Debug\DES.exe
-  DES.vcxproj -> C:\Users\33712\Desktop\DES\Debug\DES.pdb (Full PDB)
+c:\users\33712\desktop\des\des\cdesoperate.cpp(350): warning C4172: 返回局部变量或临时变量的地址: tmp
+  DES.vcxproj -> C:\Users\33712\Desktop\DES\Debug\RSA.exe
+  DES.vcxproj -> C:\Users\33712\Desktop\DES\Debug\RSA.pdb (Full PDB)
