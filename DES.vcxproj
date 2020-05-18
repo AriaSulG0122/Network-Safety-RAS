@@ -152,12 +152,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CDesOperate.cpp" />
+    <ClCompile Include="CRSAOperate.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyClient.cpp" />
     <ClCompile Include="MyServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CDesOperate.h" />
+    <ClInclude Include="CRSAOperate.h" />
     <ClInclude Include="MyClient.h" />
     <ClInclude Include="MyServer.h" />
     <ClInclude Include="StaticArray.h" />

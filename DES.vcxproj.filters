@@ -27,6 +27,9 @@
     <ClCompile Include="MyClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CRSAOperate.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CDesOperate.h">
@@ -39,6 +42,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MyClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CRSAOperate.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
