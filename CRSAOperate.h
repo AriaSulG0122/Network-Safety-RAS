@@ -1,6 +1,6 @@
 #pragma once
 #include <stdlib.h>
-
+#include <stdio.h>
 #define UINT64 unsigned __int64
 
 //公钥的结构体，记录了e和n
@@ -41,11 +41,11 @@ unsigned __int64 PowMod(unsigned __int64 base, unsigned __int64 pow, unsigned __
 	生成随机的大质数
 */
 //Miller-Rabin素数测试算法
-long RabinMillerKnl(unsigned __int64 &n);
+long RabinMillerKnl(unsigned __int64 n);
 //多次运行Miller-Rabin素数测试算法，以减少误判概率
 long RabinMiller(unsigned __int64 &n, long loop = 100);
 //最终的质数生成函数
-unsigned __int64 RandomPrime(char bits);
+unsigned __int64 RandomPrime(int bits);
 
 /*
 	求最大公约数
@@ -63,7 +63,7 @@ unsigned __int64 Euclid(unsigned __int64 e, unsigned __int64 t_n);
 	密钥分配
 */
 //加密函数Encry，通过参数cKey传递公钥
-static unsigned __int64 Encry(unsigned short nSorce, PublicKey &cKey);
+unsigned __int64 Encry(unsigned short nSorce, PublicKey &cKey);
 //解密函数Decry
 unsigned short Decry(UINT64 nSorce);
 //公钥获取函数

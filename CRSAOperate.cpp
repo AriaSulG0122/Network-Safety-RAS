@@ -5,7 +5,7 @@ Paraments m_cParament;
 
 //模乘运算（计算两个数的乘积然后取模）
 unsigned __int64 MulMod(unsigned __int64 a, unsigned __int64 b, unsigned __int64 n) {
-	return (a%n)*(a%n) % n;
+	return (a%n)*(b%n) % n;
 }
 //模幂运算（求模下指数幂的快速算法）
 unsigned __int64 PowMod(unsigned __int64 base, unsigned __int64 pow, unsigned __int64 n) {
@@ -24,7 +24,7 @@ unsigned __int64 PowMod(unsigned __int64 base, unsigned __int64 pow, unsigned __
 
 
 //Miller-Rabin素数测试算法
-long RabinMillerKnl(unsigned __int64 &n) {
+long RabinMillerKnl(unsigned __int64 n) {
 	unsigned __int64 a, q, k, v;
 	q = n - 1;
 	k = 0;
@@ -44,13 +44,13 @@ long RabinMillerKnl(unsigned __int64 &n) {
 		unsigned int z = 1;
 		//得到z=2^j
 		for (int w = 0; w < j; w++) {
-			z << 1;
+			z *= 2;
 		}
 		if (PowMod(a, z*q, n) == n - 1) {//可能为质数
 			return 1;
 		}
-		return 0;
 	}
+	return 0;
 }
 //多次运行Miller-Rabin素数测试算法，以减少误判概率
 long RabinMiller(unsigned __int64 &n, long loop ) {
@@ -63,13 +63,14 @@ long RabinMiller(unsigned __int64 &n, long loop ) {
 	return 1;
 }
 //最终的质数生成函数，产生bits位的质数
-unsigned __int64 RandomPrime(char bits) {
+unsigned __int64 RandomPrime(int bits) {
 	unsigned __int64 base;
 	do {
 		base = (unsigned long)1 << (bits - 1);//保证最高位是1
 		base += rand()%base;//再加上一个随机数
 		base |= 1;//保证最低位是1，即保证是奇数
 	} while (!RabinMiller(base, 30));//进行Miller-Rabin素数测试30次
+	printf("base:%I64u\n", base);
 	return base;//每轮Miller-Rabin素数测试都通过，则为素数
 }
 
@@ -111,8 +112,8 @@ unsigned __int64 Euclid(unsigned __int64 e, unsigned __int64 t_n) {
 }
 
 //加密函数Encry，通过参数cKey传递公钥
-static unsigned __int64 Encry(unsigned short nSorce, PublicKey &cKey) {
-	return PowMod(nSorce, cKey.nE, cKey.nN);//nSorce为明问
+unsigned __int64 Encry(unsigned short nSorce, PublicKey &cKey) {
+	return PowMod(nSorce, cKey.nE, cKey.nN);//nSorce为明文
 }
 //解密函数Decry
 unsigned short Decry(UINT64 nSorce) {
@@ -136,7 +137,7 @@ PublicKey GetPublicKey(){
 //生成公钥和私钥
 RsaRaram RsaGetParam(void) {
 	RsaRaram Rsa = { 0 };
-	UINT64 t;
+	UINT64 t=0;
 	Rsa.p = RandomPrime(16);
 	Rsa.q = RandomPrime(16);
 	Rsa.n = Rsa.p*Rsa.q;

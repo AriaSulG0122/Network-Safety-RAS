@@ -1,7 +1,4 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (DES.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   main.cpp
-c:\users\33712\desktop\rsa\des\main.cpp(18): warning C4477: “printf”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“unsigned __int64”
-  c:\users\33712\desktop\rsa\des\main.cpp(18): note: 请考虑在格式字符串中使用“%lld”
-  c:\users\33712\desktop\rsa\des\main.cpp(18): note: 请考虑在格式字符串中使用“%I64d”
   DES.vcxproj -> C:\Users\33712\Desktop\RSA\Debug\RSA.exe
   DES.vcxproj -> C:\Users\33712\Desktop\RSA\Debug\RSA.pdb (Full PDB)
