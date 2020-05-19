@@ -1,8 +1,12 @@
 #include <windows.h>
 #include <stdio.h>
+#include <string.h>
 #include "MyServer.h"
 #include "CDesOperate.h"
+#include "CRSAOperate.h"
 #pragma comment(lib,"ws2_32.lib")
+
+extern Paraments m_cParament;
 
 int runServer()
 {
@@ -29,10 +33,45 @@ int runServer()
 	int len = sizeof(SOCKADDR);
 	SOCKET ClientSocket = accept(ServerSocket, (SOCKADDR*)&addr_out, &len);
 	//6.计算密钥	
-	char key[10] = { 0 };
-	printf("Please input the key:");
-	scanf("%s", key);
-	op.MakeKey(key);
+	char desKey[10] = { '\n' };
+	//printf("Please input the desKey:");
+	//scanf("%s", desKey);
+	//op.MakeKey(desKey);
+	//生成RSA公私钥对
+	RsaParam rsaParam = RsaGetParam();
+	m_cParament.d = rsaParam.d;
+	m_cParament.e = rsaParam.e;
+	m_cParament.n = rsaParam.n;
+	PublicKey publicKey = GetPublicKey();
+	char cpublicKey[100], sN[100], sE[100];
+	sprintf(sN,"%lu",publicKey.nN);
+	//itoa(publicKey.nN, sN, 10);
+	itoa(publicKey.nE, sE, 10);
+	strcpy(cpublicKey, sN);
+	int p1 = strlen(sN),p2=strlen(sE);
+	cpublicKey[p1] = '~';
+	strncpy(cpublicKey+p1+1, sE,p2);
+	cpublicKey[p1 + p2 + 1] = '\0';
+	printf("S: Send public key to client:%s\n",cpublicKey);
+	send(ClientSocket, cpublicKey, strlen(cpublicKey), 0);
+	//接收加密后的DES密钥
+	char encryKey[300] = {'\0'};
+	recv(ClientSocket, encryKey, 300, 0);//接收密文
+	printf("S: Receive encrypted key from client:%s\n",encryKey);
+	int k = 0;
+	for (int i = 0; i < 4; i++) {
+		char cencry[20] = { '\0'};
+		int p=0;
+		while (encryKey[k++] != '~') {
+			cencry[p++] = encryKey[k-1];
+		}
+		UINT64 encry = atoll(cencry);
+		UINT64 decry = Decry(encry);
+		desKey[i * 2] = decry >> 8;
+		desKey[i * 2 + 1] = decry % 256;
+	}
+	printf("S:decrypted key:%s\n", desKey);
+	op.MakeKey(desKey);
 	while (1)
 	{
 		memset(op.plaintext, 0, sizeof(op.plaintext));//初始化明文

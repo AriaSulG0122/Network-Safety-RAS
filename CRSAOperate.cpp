@@ -1,5 +1,5 @@
 #include"CRSAOperate.h"
-
+#include <time.h>
 
 Paraments m_cParament;
 
@@ -70,7 +70,7 @@ unsigned __int64 RandomPrime(int bits) {
 		base += rand()%base;//再加上一个随机数
 		base |= 1;//保证最低位是1，即保证是奇数
 	} while (!RabinMiller(base, 30));//进行Miller-Rabin素数测试30次
-	printf("base:%I64u\n", base);
+	//printf("base:%I64u\n", base);
 	return base;//每轮Miller-Rabin素数测试都通过，则为素数
 }
 
@@ -135,8 +135,8 @@ PublicKey GetPublicKey(){
 }
 
 //生成公钥和私钥
-RsaRaram RsaGetParam(void) {
-	RsaRaram Rsa = { 0 };
+RsaParam RsaGetParam(void) {
+	RsaParam Rsa = { 0 };
 	UINT64 t=0;
 	Rsa.p = RandomPrime(16);
 	Rsa.q = RandomPrime(16);
@@ -156,3 +156,10 @@ RsaRaram RsaGetParam(void) {
 	return Rsa;
 }
 
+void GenerateDesKey(char* randomKey) {
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < 8; i++) {
+		randomKey[i] = rand() % 93 + 33;
+	}
+	return;
+}

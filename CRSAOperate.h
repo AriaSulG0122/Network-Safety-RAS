@@ -17,7 +17,7 @@ public:
 	unsigned __int64 n;
 	unsigned __int64 e;
 };
-class RsaRaram
+class RsaParam
 {
 public:
 	unsigned __int64 p;
@@ -69,4 +69,6 @@ unsigned short Decry(UINT64 nSorce);
 //公钥获取函数
 PublicKey GetPublicKey();
 //生成公钥和私钥
-RsaRaram RsaGetParam(void);
+RsaParam RsaGetParam(void);
+//产生随机的DES密钥
+void GenerateDesKey(char* randomKey);

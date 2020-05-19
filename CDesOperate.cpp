@@ -349,3 +349,4 @@ char* CDesOperate::getTime()
 	strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S", localtime(&timep));
 	return tmp;
 }
+

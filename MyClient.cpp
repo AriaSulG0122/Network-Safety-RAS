@@ -1,6 +1,8 @@
 #include <windows.h>
 #include <stdio.h>
+#include "MyClient.h"
 #include "CDesOperate.h"
+#include "CRSAOperate.h"
 #pragma comment(lib,"ws2_32.lib")
 
 
@@ -28,10 +30,62 @@ int runClient()
 	else
 	{
 		printf("C: Success to connect to server\n");
-		char key[10] = { 0 }, plaintext[255], ciphtext[500] = { 0 };
-		printf("C: Please input the key:");
-		scanf("%s", key);
-		op.MakeKey(key);
+
+		char publicKey[100] = { 0 };
+		recv(ServerSocket, publicKey, 100, 0);
+		printf("C:Receive public key from server:%s\n", publicKey);
+		char sN[100], sE[100];
+		int pN=0, pE=0;
+		bool divide = false;
+		for (int i = 0; i < strlen(publicKey); i++)
+		{
+			if (publicKey[i] == '~') { divide = true; continue; }
+			if (!divide) {
+				sN[pN++] = publicKey[i];
+			}else{
+				sE[pE++] = publicKey[i];
+			}
+		}
+		PublicKey rsaPublic;
+		rsaPublic.nE = atoi(sE);
+		rsaPublic.nN = atoll(sN);
+		char encryKey[300];
+
+		char desKey[8] = { 0 }, plaintext[255], ciphtext[500] = { 0 };
+		//printf("C: Please input the desKey:");
+		//***产生随机DES密钥
+		GenerateDesKey(desKey);
+		printf("C: Generate random DES key:");
+		for (int i = 0; i < 8; i++) {
+			printf("%c", desKey[i]);
+		}
+		printf("\n");
+		//scanf("%s", desKey);
+		char tempK[8];
+		strcpy(tempK, desKey);
+		op.MakeKey(tempK);
+		int p=0;
+		for (int i = 0; i < 4; i++) {
+			int p1 = i * 2, p2 = i * 2 + 1;
+			int num1 = int(desKey[p1]);
+			int num2 = int(desKey[p2]);
+			UINT64 curNum = (num1 << 8) + num2;
+			UINT64 encry = Encry(curNum,rsaPublic);
+			char cencry[20];
+			//itoa(encry, cencry, 10);
+			sprintf(cencry,"%lu",encry);
+			strncpy(encryKey+p, cencry,strlen(cencry));
+			p += strlen(cencry);
+			char divide = '~';
+			encryKey[p] = divide;
+			p += 1;
+		}
+		encryKey[p] = '\0';
+		//发送加密的DES密钥给给服务器
+		printf("C:Send encrypted DES key to server:%s\n", encryKey);
+		send(ServerSocket, encryKey, p, 0);
+
+
 		while (1) 
 		{  //发送密文信息
 			printf("C: Please input the plaintext:");
